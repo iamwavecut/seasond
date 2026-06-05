@@ -16,14 +16,14 @@ build_one() {
   local goarch="$2"
   local archive_os="$3"
   local archive_arch="$4"
-  local bin_name="modguard"
+  local bin_name="seasond"
   local archive_base="seasond_${version}_${archive_os}_${archive_arch}"
   local work_dir
   work_dir="$(mktemp -d)"
   trap 'rm -rf "$work_dir"' RETURN
 
   if [[ "$goos" == "windows" ]]; then
-    bin_name="modguard.exe"
+    bin_name="seasond.exe"
   fi
 
   echo "building ${goos}/${goarch}"
@@ -33,7 +33,7 @@ build_one() {
       -trimpath \
       -ldflags "-s -w" \
       -o "$work_dir/$bin_name" \
-      ./cmd/modguard
+      ./cmd/seasond
   )
 
   if [[ "$goos" == "windows" ]]; then

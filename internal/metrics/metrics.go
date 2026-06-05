@@ -38,20 +38,20 @@ func (r *Registry) WritePrometheus(w io.Writer, knownVersions int64) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	_, _ = fmt.Fprintln(w, "# TYPE modguard_requests_total counter")
+	_, _ = fmt.Fprintln(w, "# TYPE seasond_requests_total counter")
 	for _, key := range sortedKeys(r.requests) {
-		_, _ = fmt.Fprintf(w, "modguard_requests_total{%s} %d\n", key, r.requests[key])
+		_, _ = fmt.Fprintf(w, "seasond_requests_total{%s} %d\n", key, r.requests[key])
 	}
-	_, _ = fmt.Fprintln(w, "# TYPE modguard_request_duration_seconds summary")
+	_, _ = fmt.Fprintln(w, "# TYPE seasond_request_duration_seconds summary")
 	for _, key := range sortedKeys(r.durations) {
-		_, _ = fmt.Fprintf(w, "modguard_request_duration_seconds_sum{%s} %.6f\n", key, r.durations[key].Seconds())
+		_, _ = fmt.Fprintf(w, "seasond_request_duration_seconds_sum{%s} %.6f\n", key, r.durations[key].Seconds())
 	}
-	_, _ = fmt.Fprintln(w, "# TYPE modguard_blocked_requests_total counter")
+	_, _ = fmt.Fprintln(w, "# TYPE seasond_blocked_requests_total counter")
 	for _, reason := range sortedKeys(r.blocked) {
-		_, _ = fmt.Fprintf(w, "modguard_blocked_requests_total{reason=%q} %d\n", reason, r.blocked[reason])
+		_, _ = fmt.Fprintf(w, "seasond_blocked_requests_total{reason=%q} %d\n", reason, r.blocked[reason])
 	}
-	_, _ = fmt.Fprintln(w, "# TYPE modguard_known_versions_total gauge")
-	_, _ = fmt.Fprintf(w, "modguard_known_versions_total %d\n", knownVersions)
+	_, _ = fmt.Fprintln(w, "# TYPE seasond_known_versions_total gauge")
+	_, _ = fmt.Fprintf(w, "seasond_known_versions_total %d\n", knownVersions)
 }
 
 func labels(endpoint string, status int, decision string) string {

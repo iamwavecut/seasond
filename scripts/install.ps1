@@ -5,7 +5,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $Repo = "iamwavecut/seasond"
-$Binary = "modguard.exe"
+$Binary = "seasond.exe"
 
 if ([string]::IsNullOrWhiteSpace($InstallDir)) {
     if (-not [string]::IsNullOrWhiteSpace($env:INSTALL_DIR)) {
@@ -51,7 +51,7 @@ try {
     New-Item -ItemType Directory -Path $InstallDir -Force | Out-Null
     Copy-Item -Path (Join-Path $Temp $Binary) -Destination (Join-Path $InstallDir $Binary) -Force
 
-    Write-Host "Installed modguard $Version to $(Join-Path $InstallDir $Binary)"
+    Write-Host "Installed seasond $Version to $(Join-Path $InstallDir $Binary)"
     $PathEntries = $env:PATH -split ";"
     if ($PathEntries -notcontains $InstallDir) {
         Write-Host "Note: $InstallDir is not in PATH."

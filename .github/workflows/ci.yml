@@ -41,6 +41,7 @@ jobs:
         run: |
           bash -n scripts/install.sh scripts/release/*.sh
           bash scripts/release/test-next-version.sh
+          bash scripts/release/test-build-archives.sh
 
       - name: Build
-        run: go build -o /tmp/seasond-modguard ./cmd/modguard
+        run: go build -o /tmp/seasond ./cmd/seasond

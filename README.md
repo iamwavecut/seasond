@@ -67,18 +67,18 @@ $env:VERSION = "v0.1.0"; irm https://raw.githubusercontent.com/iamwavecut/season
 Requires Go 1.26 or newer.
 
 ```bash
-go install github.com/iamwavecut/seasond/cmd/modguard@latest
+go install github.com/iamwavecut/seasond/cmd/seasond@latest
 ```
 
 Or build from a checkout:
 
 ```bash
-go build -o modguard ./cmd/modguard
+go build -o seasond ./cmd/seasond
 ```
 
 ### Manual Downloads
 
-Release archives contain a single `modguard` binary:
+Release archives contain a single `seasond` binary:
 
 ```text
 seasond_v0.1.0_linux_x64.tar.gz
@@ -90,7 +90,7 @@ seasond_v0.1.0_windows_x86.zip
 ```
 
 Download from [the latest release](https://github.com/iamwavecut/seasond/releases/latest),
-extract the archive, and place `modguard` in a directory on `PATH`.
+extract the archive, and place `seasond` in a directory on `PATH`.
 
 ### Docker
 
@@ -116,7 +116,7 @@ Start the service with a persistent SQLite database:
 DB_PATH=./seasond.db \
 BOOTSTRAP_SINCE=2026-01-01T00:00:00Z \
 LISTEN_ADDR=:8080 \
-modguard
+seasond
 ```
 
 Use it as a Go proxy:
@@ -196,7 +196,7 @@ All configuration is environment-based.
 | `UPSTREAM_PROXY_BASE` | `https://proxy.golang.org` | Public module proxy used for lists, info, and artifact redirects. |
 | `INDEX_BASE` | `https://index.golang.org` | Go module index base URL. |
 | `DEFAULT_MIN_AGE` | `336h` | Root policy age as a Go duration string. |
-| `DB_PATH` | `modguard.db` | SQLite database path. |
+| `DB_PATH` | `seasond.db` | SQLite database path. |
 | `POLL_INTERVAL` | `60s` | Delay between index sync attempts. |
 | `BOOTSTRAP_SINCE` | empty | Initial index cursor when no cursor exists in SQLite. |
 | `HTTP_TIMEOUT` | `15s` | Timeout for upstream/index HTTP calls and graceful shutdown. |
@@ -229,10 +229,10 @@ Endpoints:
 
 Metric names currently emitted:
 
-- `modguard_requests_total`
-- `modguard_request_duration_seconds_sum`
-- `modguard_blocked_requests_total`
-- `modguard_known_versions_total`
+- `seasond_requests_total`
+- `seasond_request_duration_seconds_sum`
+- `seasond_blocked_requests_total`
+- `seasond_known_versions_total`
 
 Request logs are structured with `method`, `path`, `endpoint`, `decision`,
 `duration_ms`, and `status_code`.
@@ -244,7 +244,7 @@ Run the standard checks:
 ```bash
 go test ./...
 go vet ./...
-go build -o /tmp/seasond-modguard ./cmd/modguard
+go build -o /tmp/seasond ./cmd/seasond
 ```
 
 Run the networked end-to-end smoke test with the real Go command:
@@ -304,7 +304,7 @@ The second form allows fallback paths outside the policy boundary.
 ## Project Layout
 
 ```text
-cmd/modguard          binary entrypoint
+cmd/seasond          binary entrypoint
 internal/config       environment configuration
 internal/httpapi      GOPROXY-compatible HTTP facade
 internal/indexsync    index.golang.org ingestion

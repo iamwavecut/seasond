@@ -2,7 +2,7 @@
 set -euo pipefail
 
 repo="iamwavecut/seasond"
-binary="modguard"
+binary="seasond"
 default_install_dir="${HOME}/.local/bin"
 install_dir="${INSTALL_DIR:-}"
 

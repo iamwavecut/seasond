@@ -67,7 +67,7 @@ Expected: PASS.
 - Create: `internal/metrics/metrics.go`
 - Create: `internal/httpapi/server_test.go`
 - Create: `internal/httpapi/server.go`
-- Create: `cmd/modguard/main.go`
+- Create: `cmd/seasond/main.go`
 
 - [ ] **Step 1: Write failing integration tests**
 
@@ -98,7 +98,7 @@ Expected: PASS.
 
 - [ ] **Step 2: Build binary**
 
-Run: `go build ./cmd/modguard`
+Run: `go build ./cmd/seasond`
 
 Expected: PASS.
 

@@ -95,7 +95,7 @@ func TestHealthReadyStatusAndMetrics(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("metrics status = %d body=%q, want 200", resp.StatusCode, body)
 	}
-	if !strings.Contains(body, "modguard_known_versions_total 2") {
+	if !strings.Contains(body, "seasond_known_versions_total 2") {
 		t.Fatalf("metrics body = %q, want known versions metric", body)
 	}
 }

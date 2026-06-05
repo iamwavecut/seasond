@@ -28,7 +28,7 @@ func LoadFromEnv() (Config, error) {
 		UpstreamProxyBase: envString("UPSTREAM_PROXY_BASE", "https://proxy.golang.org"),
 		IndexBase:         envString("INDEX_BASE", "https://index.golang.org"),
 		DefaultMinAge:     336 * time.Hour,
-		DBPath:            envString("DB_PATH", "modguard.db"),
+		DBPath:            envString("DB_PATH", "seasond.db"),
 		PollInterval:      envDuration("POLL_INTERVAL", 60*time.Second),
 		BootstrapSince:    os.Getenv("BOOTSTRAP_SINCE"),
 		HTTPTimeout:       envDuration("HTTP_TIMEOUT", 15*time.Second),

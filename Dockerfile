@@ -13,11 +13,11 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     CGO_ENABLED=0 GOOS=linux go build \
     -trimpath \
     -ldflags="-s -w" \
-    -o /out/modguard \
-    ./cmd/modguard
+    -o /out/seasond \
+    ./cmd/seasond
 
 FROM gcr.io/distroless/static-debian12:nonroot
 
-COPY --from=build /out/modguard /modguard
+COPY --from=build /out/seasond /seasond
 EXPOSE 8080
-ENTRYPOINT ["/modguard"]
+ENTRYPOINT ["/seasond"]
