@@ -1,0 +1,17 @@
+# Build outputs
+/modguard
+/bin/
+
+# Runtime state
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+
+# Local task/spec files
+/go_module_age_gate_proxy_spec_for_codex.md
+
+# Local editor and OS files
+.DS_Store
+.idea/
+.vscode/
