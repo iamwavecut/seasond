@@ -5,6 +5,13 @@ repo="iamwavecut/seasond"
 binary="seasond"
 default_install_dir="${HOME}/.local/bin"
 install_dir="${INSTALL_DIR:-}"
+tmp=""
+
+cleanup() {
+  if [[ -n "${tmp:-}" ]]; then
+    rm -rf "$tmp"
+  fi
+}
 
 need() {
   if ! command -v "$1" >/dev/null 2>&1; then
@@ -81,7 +88,7 @@ main() {
   need curl
   need tar
 
-  local platform version archive url tmp install_to
+  local platform version archive url install_to
   platform="$(detect_platform)"
   version="${VERSION:-$(latest_version)}"
   if [[ -z "$version" ]]; then
@@ -92,7 +99,7 @@ main() {
   archive="seasond_${version}_${platform}.tar.gz"
   url="https://github.com/${repo}/releases/download/${version}/${archive}"
   tmp="$(mktemp -d)"
-  trap 'rm -rf "$tmp"' EXIT
+  trap cleanup EXIT
 
   curl -fL "$url" -o "$tmp/$archive"
   tar -xzf "$tmp/$archive" -C "$tmp"

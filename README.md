@@ -57,7 +57,7 @@ irm https://raw.githubusercontent.com/iamwavecut/seasond/main/scripts/install.ps
 Install a specific version:
 
 ```bash
-VERSION=v0.1.0 curl -fsSL https://raw.githubusercontent.com/iamwavecut/seasond/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/iamwavecut/seasond/main/scripts/install.sh | VERSION=v0.1.0 bash
 ```
 
 ```powershell
