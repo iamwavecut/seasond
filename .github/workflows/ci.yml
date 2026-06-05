@@ -20,6 +20,16 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
+          cache-dependency-path: go.sum
+
+      - name: Restore Go build cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/go-build
+          key: ${{ runner.os }}-go-build-${{ hashFiles('go.sum') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-go-build-${{ hashFiles('go.sum') }}-
+            ${{ runner.os }}-go-build-
 
       - name: Test
         run: go test ./...
