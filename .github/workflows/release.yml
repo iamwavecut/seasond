@@ -1,0 +1,95 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+concurrency:
+  group: release-main
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Determine next version
+        id: version
+        run: |
+          scripts/release/next-version.sh | tee version.env
+          cat version.env >> "$GITHUB_OUTPUT"
+
+      - name: Stop when there is no semantic release
+        if: steps.version.outputs.release_type == 'none'
+        run: echo "No Conventional Commit release signal found."
+
+      - name: Test
+        if: steps.version.outputs.release_type != 'none'
+        run: go test ./...
+
+      - name: Vet
+        if: steps.version.outputs.release_type != 'none'
+        run: go vet ./...
+
+      - name: Build archives
+        if: steps.version.outputs.release_type != 'none'
+        run: scripts/release/build-archives.sh "${{ steps.version.outputs.version }}"
+
+      - name: Create and push tag
+        if: steps.version.outputs.release_type != 'none'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "${{ steps.version.outputs.version }}" -m "${{ steps.version.outputs.version }}"
+          git push origin "${{ steps.version.outputs.version }}"
+
+      - name: Create GitHub release
+        if: steps.version.outputs.release_type != 'none'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.version.outputs.version }}" \
+            --title "${{ steps.version.outputs.version }}" \
+            --generate-notes \
+            dist/*
+
+      - name: Set up Docker Buildx
+        if: steps.version.outputs.release_type != 'none'
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GitHub Container Registry
+        if: steps.version.outputs.release_type != 'none'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Build and push container image
+        if: steps.version.outputs.release_type != 'none'
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ steps.version.outputs.version }}
+            ghcr.io/${{ github.repository }}:${{ steps.version.outputs.version_no_v }}
+            ghcr.io/${{ github.repository }}:latest

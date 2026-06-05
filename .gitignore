@@ -1,6 +1,8 @@
 # Build outputs
 /modguard
 /bin/
+/dist/
+/tmp/
 
 # Runtime state
 *.db

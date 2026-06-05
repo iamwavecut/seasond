@@ -1,8 +1,11 @@
 # seasond
 
 [![CI](https://github.com/iamwavecut/seasond/actions/workflows/ci.yml/badge.svg)](https://github.com/iamwavecut/seasond/actions/workflows/ci.yml)
+[![Release](https://github.com/iamwavecut/seasond/actions/workflows/release.yml/badge.svg)](https://github.com/iamwavecut/seasond/actions/workflows/release.yml)
+[![Latest Release](https://img.shields.io/github/v/release/iamwavecut/seasond?sort=semver)](https://github.com/iamwavecut/seasond/releases/latest)
 [![Go Reference](https://pkg.go.dev/badge/github.com/iamwavecut/seasond.svg)](https://pkg.go.dev/github.com/iamwavecut/seasond)
 [![Go Report Card](https://goreportcard.com/badge/github.com/iamwavecut/seasond)](https://goreportcard.com/report/github.com/iamwavecut/seasond)
+[![GHCR](https://img.shields.io/badge/ghcr.io-iamwavecut%2Fseasond-blue)](https://github.com/iamwavecut/seasond/pkgs/container/seasond)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 `seasond` is a small GOPROXY-compatible HTTP service that blocks Go module
@@ -39,6 +42,28 @@ denylists, or a UI.
 
 ## Install
 
+Install the latest release on Linux or macOS:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/iamwavecut/seasond/main/scripts/install.sh | bash
+```
+
+Install the latest release on Windows PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/iamwavecut/seasond/main/scripts/install.ps1 | iex
+```
+
+Install a specific version:
+
+```bash
+VERSION=v0.1.0 curl -fsSL https://raw.githubusercontent.com/iamwavecut/seasond/main/scripts/install.sh | bash
+```
+
+```powershell
+$env:VERSION = "v0.1.0"; irm https://raw.githubusercontent.com/iamwavecut/seasond/main/scripts/install.ps1 | iex
+```
+
 Requires Go 1.26 or newer.
 
 ```bash
@@ -50,6 +75,38 @@ Or build from a checkout:
 ```bash
 go build -o modguard ./cmd/modguard
 ```
+
+### Manual Downloads
+
+Release archives contain a single `modguard` binary:
+
+```text
+seasond_v0.1.0_linux_x64.tar.gz
+seasond_v0.1.0_linux_x86.tar.gz
+seasond_v0.1.0_macos_x64.tar.gz
+seasond_v0.1.0_macos_arm64.tar.gz
+seasond_v0.1.0_windows_x64.zip
+seasond_v0.1.0_windows_x86.zip
+```
+
+Download from [the latest release](https://github.com/iamwavecut/seasond/releases/latest),
+extract the archive, and place `modguard` in a directory on `PATH`.
+
+### Docker
+
+Run a published GitHub Container Registry image:
+
+```bash
+docker run --rm \
+  -p 8080:8080 \
+  -v "$PWD/seasond-data:/data" \
+  -e DB_PATH=/data/seasond.db \
+  -e BOOTSTRAP_SINCE=2026-01-01T00:00:00Z \
+  ghcr.io/iamwavecut/seasond:v0.1.0
+```
+
+The release workflow also publishes `ghcr.io/iamwavecut/seasond:latest`, but
+pinning a version is recommended for deployments.
 
 ## Quick Start
 
@@ -200,6 +257,29 @@ The e2e test starts a local proxy handler, seeds SQLite metadata, and verifies
 that `go mod download` succeeds for an old version and fails closed for a fresh
 version.
 
+## Releases
+
+Releases are automated from Conventional Commits merged into `main`.
+
+| Commit signal | Version bump |
+| --- | --- |
+| `fix:`, `perf:`, `refactor:`, `build:`, `ci:`, `chore:`, `docs:`, `style:`, `test:`, `revert:` | patch |
+| `feat:` | minor |
+| `type!:` or `BREAKING CHANGE:` | major |
+
+On a release-producing push to `main`, GitHub Actions:
+
+1. calculates the next SemVer tag from commits since the latest `vX.Y.Z` tag;
+2. runs tests and vet;
+3. builds Linux, macOS, and Windows archives;
+4. creates the GitHub tag and release;
+5. publishes `ghcr.io/iamwavecut/seasond:<version>`,
+   `ghcr.io/iamwavecut/seasond:<version-without-v>`, and
+   `ghcr.io/iamwavecut/seasond:latest`.
+
+If a push contains no recognized Conventional Commit signal, no release is
+created.
+
 ## Security Model
 
 `seasond` helps reduce exposure to very fresh public module releases. It does
@@ -234,6 +314,8 @@ internal/semverutil   Go module semver sorting helpers
 internal/storage      SQLite metadata store
 internal/upstream     proxy.golang.org client
 internal/e2e          opt-in Go tool smoke tests
+scripts/install.*     release installers
+scripts/release       release helper scripts
 ```
 
 ## License

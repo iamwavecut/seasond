@@ -27,5 +27,10 @@ jobs:
       - name: Vet
         run: go vet ./...
 
+      - name: Release helper tests
+        run: |
+          bash -n scripts/install.sh scripts/release/*.sh
+          bash scripts/release/test-next-version.sh
+
       - name: Build
         run: go build -o /tmp/seasond-modguard ./cmd/modguard
