@@ -257,6 +257,16 @@ The e2e test starts a local proxy handler, seeds SQLite metadata, and verifies
 that `go mod download` succeeds for an old version and fails closed for a fresh
 version.
 
+Run the Dockerized functional test with a real Go Alpine container:
+
+```bash
+go test -tags=docker_e2e ./internal/e2e -run TestDockerizedGoToolUsesSeasonDIndexAgeGate -count=1 -v
+```
+
+This test queries the live Go module index for Google module versions, starts
+`seasond` inside `golang:1.26-alpine`, creates a dummy module, and verifies that
+the Go tool downloads the allowed version while the too-fresh version is blocked.
+
 ## Releases
 
 Releases are automated from Conventional Commits merged into `main`.
